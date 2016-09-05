@@ -1,38 +1,32 @@
 <?php
 
 /**
- * @copyright Metaways Infosystems GmbH, 2011
  * @license LGPLv3, http://opensource.org/licenses/LGPL-3.0
- * @copyright Aimeos (aimeos.org), 2015
+ * @copyright Aimeos (aimeos.org), 2016
  * @package MShop
- * @subpackage Catalog
+ * @subpackage Common
  */
 
 
-namespace Aimeos\MShop\Catalog\Manager\Decorator;
+namespace Aimeos\MShop\Common\Manager\Tree;
 
 
 /**
- * Provides common methods for catalog manager decorators.
+ * Interface for all tree manager implementations.
  *
  * @package MShop
- * @subpackage Catalog
+ * @subpackage Common
  */
-abstract class Base
-	extends \Aimeos\MShop\Common\Manager\Decorator\Base
-	implements \Aimeos\MShop\Common\Manager\Decorator\Iface, \Aimeos\MShop\Catalog\Manager\Iface
+interface Iface extends \Aimeos\MShop\Common\Manager\Iface
 {
 	/**
-	 * Returns a list of items starting with the given category that are in the path to the root node
+	 * Returns a list of item IDs, that are in the path of given item ID.
 	 *
 	 * @param string $id ID of item to get the path for
 	 * @param string[] $ref List of domains to fetch list items and referenced items for
 	 * @return array Associative list of items implementing \Aimeos\MShop\Catalog\Item\Iface with IDs as keys
 	 */
-	public function getPath( $id, array $ref = array() )
-	{
-		return $this->getManager()->getPath( $id, $ref );
-	}
+	public function getPath( $id, array $ref = array() );
 
 
 	/**
@@ -42,12 +36,9 @@ abstract class Base
 	 * @param string[] List of domains (e.g. text, media, etc.) whose referenced items should be attached to the objects
 	 * @param integer $level One of the level constants from \Aimeos\MW\Tree\Manager\Base
 	 * @param \Aimeos\MW\Criteria\Iface|null $criteria Optional criteria object with conditions
-	 * @return \Aimeos\MShop\Catalog\Item\Iface Catalog item maybe with subnodes
+	 * @return \Aimeos\MShop\Catalog\Item\Iface Catalog item, maybe with subnodes
 	 */
-	public function getTree( $id = null, array $ref = array(), $level = \Aimeos\MW\Tree\Manager\Base::LEVEL_TREE, \Aimeos\MW\Criteria\Iface $criteria = null )
-	{
-		return $this->getManager()->getTree( $id, $ref, $level, $criteria );
-	}
+	public function getTree( $id = null, array $ref = array(), $level = \Aimeos\MW\Tree\Manager\Base::LEVEL_TREE, \Aimeos\MW\Criteria\Iface $criteria = null );
 
 
 	/**
@@ -56,11 +47,9 @@ abstract class Base
 	 * @param \Aimeos\MShop\Common\Item\Tree\Iface $item Tree item which should be inserted
 	 * @param string|null $parentId ID of the parent item where the item should be inserted into
 	 * @param string|null $refId ID of the item where the item should be inserted before (null to append)
+	 * @return void
 	 */
-	public function insertItem( \Aimeos\MShop\Common\Item\Tree\Iface $item, $parentId = null, $refId = null )
-	{
-		$this->getManager()->insertItem( $item, $parentId, $refId );
-	}
+	public function insertItem( \Aimeos\MShop\Common\Item\Tree\Iface $item, $parentId = null, $refId = null );
 
 
 	/**
@@ -70,19 +59,7 @@ abstract class Base
 	 * @param string $oldParentId ID of the old parent item which currently contains the item that should be removed
 	 * @param string $newParentId ID of the new parent item where the item should be moved to
 	 * @param string|null $refId ID of the item where the item should be inserted before (null to append)
+	 * @return void
 	 */
-	public function moveItem( $id, $oldParentId, $newParentId, $refId = null )
-	{
-		$this->getManager()->moveItem( $id, $oldParentId, $newParentId, $refId );
-	}
-
-
-	/**
-	 * Rebuild the index for searching products.
-	 * This can be a long lasting operation.
-	 */
-	public function rebuildIndex()
-	{
-		$this->getManager()->rebuildIndex();
-	}
+	public function moveItem( $id, $oldParentId, $newParentId, $refId = null );
 }

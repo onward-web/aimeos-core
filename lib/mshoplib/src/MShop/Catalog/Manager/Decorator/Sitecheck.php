@@ -24,11 +24,11 @@ class Sitecheck
 	/**
 	 * Adds a new item object.
 	 *
-	 * @param \Aimeos\MShop\Catalog\Item\Iface $item Item which should be inserted
+	 * @param \Aimeos\MShop\Common\Item\Tree\Iface $item Tree item which should be inserted
 	 * @param string|null $parentId ID of the parent item where the item should be inserted into
 	 * @param string|null $refId ID of the item where the item should be inserted before (null to append)
 	 */
-	public function insertItem( \Aimeos\MShop\Catalog\Item\Iface $item, $parentId = null, $refId = null )
+	public function insertItem( \Aimeos\MShop\Common\Item\Tree\Iface $item, $parentId = null, $refId = null )
 	{
 		if( $parentId !== null ) {
 

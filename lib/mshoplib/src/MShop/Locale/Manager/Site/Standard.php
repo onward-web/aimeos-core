@@ -700,9 +700,10 @@ class Standard
 	 * @param integer|null $id Retrieve nodes starting from the given ID
 	 * @param array List of domains (e.g. text, media, etc.) whose referenced items should be attached to the objects
 	 * @param integer $level One of the level constants from \Aimeos\MW\Tree\Manager\Base
+	 * @param \Aimeos\MW\Criteria\Iface|null $criteria Optional criteria object with conditions
 	 * @return \Aimeos\MShop\Locale\Item\Site\Iface Site item
 	 */
-	public function getTree( $id = null, array $ref = array(), $level = \Aimeos\MW\Tree\Manager\Base::LEVEL_TREE )
+	public function getTree( $id = null, array $ref = array(), $level = \Aimeos\MW\Tree\Manager\Base::LEVEL_TREE, \Aimeos\MW\Criteria\Iface $criteria = null )
 	{
 		if( $id !== null )
 		{
@@ -723,8 +724,10 @@ class Standard
 
 		$items = $this->searchItems( $criteria, $ref );
 
-		if( ( $item = reset( $items ) ) === false ) {
-			throw new \Aimeos\MShop\Locale\Exception( sprintf( 'Tree root with code "%1$s" in "%2$s" not found', 'default', 'locale.site.code' ) );
+		if( ( $item = reset( $items ) ) === false )
+		{
+			$msg = sprintf( 'Tree root with code "%1$s" in "%2$s" not found', 'default', 'locale.site.code' );
+			throw new \Aimeos\MShop\Locale\Exception( $msg );
 		}
 
 		$this->cache[$item->getId()] = $item;
@@ -740,8 +743,13 @@ class Standard
 	 * @param integer|null $parentId ID of the parent item where the item should be inserted into
 	 * @param integer|null $refId ID of the item where the item should be inserted before (null to append)
 	 */
-	public function insertItem( \Aimeos\MShop\Locale\Item\Site\Iface $item, $parentId = null, $refId = null )
+	public function insertItem( \Aimeos\MShop\Common\Item\Tree\Iface $item, $parentId = null, $refId = null )
 	{
+		$iface = '\\Aimeos\\MShop\\Locale\\Item\\Site\\Iface';
+		if( !( $item instanceof $iface ) ) {
+			throw new \Aimeos\MShop\Locale\Exception( sprintf( 'Object is not of required type "%1$s"', $iface ) );
+		}
+
 		$context = $this->getContext();
 
 		$dbm = $context->getDatabaseManager();

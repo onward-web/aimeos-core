@@ -19,7 +19,7 @@ namespace Aimeos\MShop\Catalog\Item;
  * @subpackage Catalog
  */
 interface Iface
-	extends \Aimeos\MShop\Common\Item\Config\Iface, \Aimeos\MShop\Common\Item\ListRef\Iface
+	extends \Aimeos\MShop\Common\Item\ListRef\Iface, \Aimeos\MShop\Common\Item\Config\Iface, \Aimeos\MShop\Common\Item\Tree\Iface
 {
 	/**
 	 * Returns the name of the item.
@@ -65,34 +65,4 @@ interface Iface
 	 * @return \Aimeos\MShop\Catalog\Item\Iface Catalog item for chaining method calls
 	 */
 	public function setStatus( $status );
-
-	/**
-	 * Returns a child of this node identified by its index.
-	 *
-	 * @param integer $index Index of child node
-	 * @return \Aimeos\MShop\Catalog\Item\Iface Selected node
-	 */
-	public function getChild( $index );
-
-	/**
-	 * Returns all children of this node.
-	 *
-	 * @return array Numerically indexed list of nodes
-	 */
-	public function getChildren();
-
-	/**
-	 * Tests if a node has children.
-	 *
-	 * @return boolean True if node has children, false if not
-	 */
-	public function hasChildren();
-
-	/**
-	 * Adds a child node to this node.
-	 *
-	 * @param \Aimeos\MShop\Catalog\Item\Iface $item Child node to add
-	 * @return \Aimeos\MShop\Catalog\Item\Iface Catalog item for chaining method calls
-	 */
-	public function addChild( \Aimeos\MShop\Catalog\Item\Iface $item );
 }

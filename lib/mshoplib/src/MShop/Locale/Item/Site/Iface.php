@@ -19,7 +19,7 @@ namespace Aimeos\MShop\Locale\Item\Site;
  * @subpackage Locale
  */
 interface Iface
-	extends \Aimeos\MShop\Common\Item\Iface
+	extends \Aimeos\MShop\Common\Item\Iface, \Aimeos\MShop\Common\Item\Tree\Iface
 {
 	/**
 	 * Returns the code of the Site.
@@ -87,34 +87,4 @@ interface Iface
 	 * @return \Aimeos\MShop\Locale\Item\Site\Iface Locale site item for chaining method calls
 	 */
 	public function setStatus( $status );
-
-	/**
-	 * Returns a child of this node identified by its index.
-	 *
-	 * @param integer $index Index of child node
-	 * @return \Aimeos\MShop\Locale\Item\Site\Iface Selected node
-	 */
-	public function getChild( $index );
-
-	/**
-	 * Returns all children of this node.
-	 *
-	 * @return array Numerically indexed list of nodes
-	 */
-	public function getChildren();
-
-	/**
-	 * Tests if a node has children.
-	 *
-	 * @return boolean True if node has children, false if not
-	 */
-	public function hasChildren();
-
-	/**
-	 * Adds a child node to this node.
-	 *
-	 * @param \Aimeos\MShop\Locale\Item\Site\Iface $item Child node to add
-	 * @return \Aimeos\MShop\Locale\Item\Site\Iface Locale site item for chaining method calls
-	 */
-	public function addChild( \Aimeos\MShop\Locale\Item\Site\Iface $item );
 }

@@ -239,7 +239,7 @@ class Standard
 	 * Returns a child of this node identified by its index.
 	 *
 	 * @param integer $index Index of child node
-	 * @return \Aimeos\MShop\Locale\Item\Site\Iface Selected node
+	 * @return Aimeos\MShop\Common\Item\Tree\Iface Selected node
 	 */
 	public function getChild( $index )
 	{
@@ -276,11 +276,14 @@ class Standard
 	/**
 	 * Adds a child node to this node.
 	 *
-	 * @param \Aimeos\MShop\Locale\Item\Site\Iface $item Child node to add
+	 * @param \Aimeos\MShop\Common\Item\Tree\Iface $item Child node to add
+	 * @return \Aimeos\MShop\Common\Item\Tree\Iface Tree item for chaining method calls
 	 */
-	public function addChild( \Aimeos\MShop\Locale\Item\Site\Iface $item )
+	public function addChild( \Aimeos\MShop\Common\Item\Tree\Iface $item )
 	{
 		// don't set the modified flag as it's only for the values
 		$this->children[] = $item;
+
+		return $this;
 	}
 }
