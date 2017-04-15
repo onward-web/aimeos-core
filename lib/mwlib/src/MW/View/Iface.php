@@ -43,6 +43,15 @@ interface Iface
 	public function __call( $name, array $args );
 
 	/**
+	 * Calls the view helper with the given name and arguments and returns it's output.
+	 *
+	 * @param string $name Name of the view helper
+	 * @param array $args Arguments passed to the view helper
+	 * @return mixed Output depending on the view helper
+	 */
+	public static function __callStatic( $name, array $args );
+
+	/**
 	 * Returns the value associated to the given key.
 	 *
 	 * @param string $key Name of the value that should be returned
@@ -77,20 +86,29 @@ interface Iface
 	public function __set( $key, $value );
 
 	/**
+	 * Adds a view helper function to the view.
+	 *
+	 * @param string $name Name of the view helper function as called in the template
+	 * @param $string $string Code that contains the function and will be evaled
+	 * @return \Aimeos\MW\View\Iface View object for method chaining
+	 */
+	public function addFunction( $name, $string );
+
+	/**
 	 * Adds a view helper instance to the view.
 	 *
 	 * @param string $name Name of the view helper as called in the template
-	 * @param \Aimeos\MW\View\Helper\Iface $helper View helper instance
-	 * @return void
+	 * @param \Aimeos\MW\View\Helper\Iface $helper|null View helper instance or null to reset
+	 * @return \Aimeos\MW\View\Iface View object for method chaining
 	 */
-	public function addHelper( $name, \Aimeos\MW\View\Helper\Iface $helper );
+	public function addHelper( $name, \Aimeos\MW\View\Helper\Iface $helper = null );
 
 	/**
 	 * Assigns a whole set of values at once to the view.
 	 * This method overwrites already existing key/value pairs set by the magic method.
 	 *
 	 * @param array $values Associative list of key/value pairs
-	 * @return void
+	 * @return \Aimeos\MW\View\Iface View object for method chaining
 	 */
 	public function assign( array $values );
 

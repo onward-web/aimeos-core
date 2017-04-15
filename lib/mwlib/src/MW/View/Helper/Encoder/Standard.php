@@ -27,6 +27,25 @@ class Standard
 
 
 	/**
+	 * Initializes the parameter view helper.
+	 *
+	 * @param \Aimeos\MW\View\Iface $view View instance with registered view helpers
+	 * @param array $params Associative list of key/value pairs
+	 */
+	public function __construct( $view, array $params = [] )
+	{
+		parent::__construct( $view );
+
+		$view->addFunction( 'e', '
+			function e( $value = null, $trust = 0 )
+			{
+				return \Aimeos\MW\View\Base::html( $value, $trust );
+			}
+		' );
+	}
+
+
+	/**
 	 * Returns the encoder.
 	 *
 	 * @return \Aimeos\MW\View\Helper\Iface Encoder object

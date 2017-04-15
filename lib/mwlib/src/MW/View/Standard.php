@@ -15,25 +15,11 @@ namespace Aimeos\MW\View;
 /**
  * Default view implementation.
  *
- * @method mixed config(string $name = null, string|array $default = null) Returns the config value for the given key
- * @method \Aimeos\MW\View\Helper\Iface csrf() Returns the CSRF helper object
- * @method string date(string $date) Returns the formatted date
- * @method \Aimeos\MW\View\Helper\Iface encoder() Returns the encoder helper object
- * @method string formparam(string|array $names) Returns the name for the HTML form parameter
- * @method \Aimeos\MW\Mail\Message\Iface mail() Returns the e-mail message object
- * @method string number(integer|float|decimal $number, integer $decimals = 2) Returns the formatted number
- * @method string|array param(string|null $name, string|array $default) Returns the parameter value
- * @method string partial(string $filepath, array $params = [] ) Renders the partial template
- * @method \Aimeos\MW\View\Helper\Iface request() Returns the request helper object
- * @method string translate(string $domain, string $singular, string $plural = '', integer $number = 1) Returns the translated string or the original one if no translation is available
- * @method string url(string|null $target, string|null $controller = null, string|null $action = null, array $params = [], array $trailing = [], array $config = []) Returns the URL assembled from the given arguments
- *
  * @package MW
  * @subpackage View
  */
-class Standard implements \Aimeos\MW\View\Iface
+class Standard extends Base implements \Aimeos\MW\View\Iface
 {
-	private $helper = [];
 	private $values = [];
 	private $engines;
 	private $paths;
@@ -49,60 +35,6 @@ class Standard implements \Aimeos\MW\View\Iface
 	{
 		$this->engines = $engines;
 		$this->paths = $paths;
-	}
-
-
-	/**
-	 * Calls the view helper with the given name and arguments and returns it's output.
-	 *
-	 * @param string $name Name of the view helper
-	 * @param array $args Arguments passed to the view helper
-	 * @return mixed Output depending on the view helper
-	 */
-	public function __call( $name, array $args )
-	{
-		if( !isset( $this->helper[$name] ) )
-		{
-			if( ctype_alnum( $name ) === false )
-			{
-				$classname = is_string( $name ) ? '\\Aimeos\\MW\\View\\Helper\\' . $name : '<not a string>';
-				throw new \Aimeos\MW\View\Exception( sprintf( 'Invalid characters in class name "%1$s"', $classname ) );
-			}
-
-			$iface = '\\Aimeos\\MW\\View\\Helper\\Iface';
-			$classname = '\\Aimeos\\MW\\View\\Helper\\' . ucfirst( $name ) . '\\Standard';
-
-			if( class_exists( $classname ) === false ) {
-				throw new \Aimeos\MW\View\Exception( sprintf( 'Class "%1$s" not available', $classname ) );
-			}
-
-			$helper = new $classname( $this );
-
-			if( !( $helper instanceof $iface ) ) {
-				throw new \Aimeos\MW\View\Exception( sprintf( 'Class "%1$s" does not implement interface "%2$s"', $classname, $iface ) );
-			}
-
-			$this->helper[$name] = $helper;
-		}
-
-		return call_user_func_array( array( $this->helper[$name], 'transform' ), $args );
-	}
-
-
-	/**
-	 * Clones internal objects of the view.
-	 */
-	public function __clone()
-	{
-		foreach( $this->helper as $name => $helper )
-		{
-			$helper = clone $helper;
-
-			// reset view so view helpers will use the current one (for translation, etc.)
-			$helper->setView( $this );
-
-			$this->helper[$name] = $helper;
-		}
 	}
 
 
@@ -159,15 +91,18 @@ class Standard implements \Aimeos\MW\View\Iface
 
 
 	/**
-	 * Adds a view helper instance to the view.
+	 * Adds a view helper function to the view.
 	 *
-	 * @param string $name Name of the view helper as called in the template
-	 * @param \Aimeos\MW\View\Helper\Iface $helper View helper instance
+	 * @param string $name Name of the view helper function as called in the template
+	 * @param $string $string Code that contains the function and will be evaled
 	 * @return \Aimeos\MW\View\Iface View object for method chaining
 	 */
-	public function addHelper( $name, \Aimeos\MW\View\Helper\Iface $helper )
+	public function addFunction( $name, $string )
 	{
-		$this->helper[$name] = $helper;
+		if( !function_exists( $name ) ) {
+			eval( $string );
+		}
+
 		return $this;
 	}
 

@@ -34,8 +34,14 @@ class Standard
 	public function __construct( \Aimeos\MW\View\Iface $view, \Aimeos\MW\Translation\Iface $translator )
 	{
 		parent::__construct( $view );
-
 		$this->translator = $translator;
+
+		$view->addFunction( 't', '
+			function t( $domain, $singular, $plural = "", $number = 1 )
+			{
+				return \Aimeos\MW\View\Base::translate( $domain, $singular, $plural, $number );
+			}
+		' );
 	}
 
 

@@ -34,13 +34,19 @@ class Standard
 	public function __construct( $view, array $params = [] )
 	{
 		parent::__construct( $view );
-
 		$this->params = $params;
+
+		$view->addFunction( 'p', '
+			function p( $name = null, $default = null )
+			{
+				return \Aimeos\MW\View\Base::param( $name, $default );
+			}
+		' );
 	}
 
 
 	/**
-	 * Returns the parameter value.
+	 * Returns the escaped parameter value or all parameters (unescaped)
 	 *
 	 * @param string|null $name Name of the parameter key or null for all parameters
 	 * @param mixed $default Default value if parameter key is not available
@@ -64,6 +70,10 @@ class Standard
 			}
 		}
 
-		return $param;
+		if( is_array( $param ) ) {
+			return $param;
+		}
+
+		return htmlspecialchars( $param, ENT_QUOTES, 'UTF-8' );
 	}
 }
