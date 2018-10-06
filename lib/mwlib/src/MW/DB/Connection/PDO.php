@@ -50,7 +50,11 @@ class PDO extends \Aimeos\MW\DB\Connection\Base implements \Aimeos\MW\DB\Connect
 		list( $dsn, $user, $pass, $attr ) = $this->getParameters();
 
 		$pdo = new \PDO( $dsn, $user, $pass, $attr );
+		$pdo->setAttribute( \PDO::PDO::ATTR_ORACLE_NULLS, \PDO::NULL_EMPTY_STRING );
 		$pdo->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+		$pdo->setAttribute( \PDO::ATTR_STRINGIFY_FETCHES, true );
+		$pdo->setAttribute( \PDO::ATTR_AUTOCOMMIT, true );
+		$pdo->setAttribute( \PDO::ATTR_TIMEOUT, 10 );
 
 		$conn = $this->connection;
 
