@@ -991,4 +991,75 @@ class Standard extends Base
 			throw $e;
 		}
 	}
+
+    protected function saveListItems( \Aimeos\MShop\Common\Item\ListRef\Iface $item, $domain, $fetch = true )
+    {
+        $context = $this->getContext();
+        $rmListIds = $rmIds = $refManager = [];
+        $listManager = \Aimeos\MShop\Factory::createManager( $context, $domain . '/lists' );
+
+
+        foreach( $item->getListItemsDeleted() as $listItem )
+        {
+            $rmListIds[] = $listItem->getId();
+
+            if( ( $refItem = $listItem->getRefItem() ) !== null ) {
+                $rmIds[$listItem->getDomain()][] = $refItem->getId();
+            }
+        }
+
+
+        try
+        {
+            foreach( $rmIds as $refDomain => $ids )
+            {
+                $refManager[$refDomain] = \Aimeos\MShop\Factory::createManager( $context, $refDomain );
+                $refManager[$refDomain]->begin();
+
+                $refManager[$refDomain]->deleteItems( $ids );
+            }
+
+            $listManager->deleteItems( $rmListIds );
+
+
+            foreach( $item->getListItems( null, null, null, false ) as $listItem )
+            {
+                if( ( $refItem = $listItem->getRefItem() ) !== null )
+                {
+                    $refDomain = $listItem->getDomain();
+
+                    if( !isset( $refManager[$refDomain] ) )
+                    {
+                        $refManager[$refDomain] = \Aimeos\MShop\Factory::createManager( $context, $refDomain );
+                        $refManager[$refDomain]->begin();
+                    }
+
+                    $refItem = $refManager[$refDomain]->saveItem( $refItem );
+                    $listItem->setRefId( $refItem->getId() );
+                }
+
+                if( $listItem->getParentId() != $item->getId() ) {
+                    $listItem->setId( null ); //create new list item if copied
+                }
+
+                $listItem->setParentId( $item->getId() );
+                $listManager->saveItem( $listItem, $fetch );
+            }
+
+
+            foreach( $refManager as $manager ) {
+                $manager->commit();
+            }
+        }
+        catch( \Exception $e )
+        {
+            foreach( $refManager as $manager ) {
+                $manager->rollback();
+            }
+
+            throw $e;
+        }
+
+        return $item;
+    }
 }
